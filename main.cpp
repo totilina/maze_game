@@ -17,8 +17,7 @@ int main()
 			while (true)
 			{
 				int map[ROW][COL] = {0};
-				map[1][1] = 9;						// 终点位置，迷宫出口
-				map[MAP_ROW - 1][MAP_COL - 1] = 10; // 角色位置，起点
+				map[MAP_ROW - 1][MAP_COL - 1] = 10; 
 				Initmap(map);
 				if (Playgame(map))
 					break;

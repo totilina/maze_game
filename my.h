@@ -30,6 +30,12 @@ int Playgame(int map[][COL]);
 
 void drawmap(int map[][COL]);   //绘制地图，地图可视化
 
+void copy_(struct Stack stack[], int len, struct Stack *answer);
+
+void draw_answer(int map[][COL]);
+
+void draw_stack(struct Stack stack[], int len,int map[][COL]);
+
 void Game_description();
 
 void Game_settings();
