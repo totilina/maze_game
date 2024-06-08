@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <easyx.h>
@@ -19,7 +20,7 @@ struct Button
 
 typedef struct Button Button;
 
-int Main_interface();
+int Main_interface(int set);
 void drawButton(Button btn);							  // 绘制按钮(功能键)函数
 bool isMouseOnButton(Button btn, int mouseX, int mouseY); // 判断鼠标点击位置是否在按钮区域内的函数
 
@@ -38,5 +39,7 @@ void draw_answer(int map[][COL],int my_x,int my_y);
 
 void Game_description();
 
-void Game_settings();
+int Du_set(int *set);
+
+int Game_settings(int *set);
 

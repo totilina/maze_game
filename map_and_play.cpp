@@ -276,7 +276,7 @@ void draw_answer(int map[][COL], int my_x, int my_y)
 {
 	BeginBatchDraw(); // ∑¿∆µ…¡
 	cleardevice();
-
+	
 	for (int i = 0; i < ROW; i++)
 	{
 		for (int j = 0; j < COL; j++)
