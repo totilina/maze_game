@@ -13,14 +13,14 @@ int Main_interface()
 	setbkcolor(RGB(255, 239, 213)); // 偏橙色 255 ,239 ,213 ， 偏黄色  255 ,248 ,220 ,标准米白色 255 ,250 ,240
 	cleardevice();
 
-	// //设置背景为一张图片
-	// IMAGE bgImage;
-	// loadimage(&bgImage, _T("background.jpg"), ROW * SIZE, COL * SIZE);//加载图片
+	//设置背景为一张图片
+	IMAGE bgImage;
+	loadimage(&bgImage, _T("background.png"), ROW * SIZE, COL * SIZE);//加载图片
 
-	// putimage(0, 0, &bgImage);                                  //显示图片
+	putimage(0, 0, &bgImage);                                  //显示图片
 
 	// 设置文本颜色、字体和大小
-	settextcolor(BLACK); // 设置文本颜色为黑色
+	settextcolor(BLUE); // 设置文本颜色为黑色
 	settextstyle(60, 0, "微软雅黑");
 	setbkmode(TRANSPARENT); // 设置文本背景透明
 
@@ -102,7 +102,7 @@ void Game_description()
 	cleardevice();
 	settextstyle(40, 0, "楷书");
 	// settextstyle(40, 0, "宋体");
-	const char *text1 = "欢迎来到无限迷宫冒险游戏，点击开始游戏，会随机生成一个迷宫，走出出口后会继续生成一个迷宫，迷宫无穷无尽，而且每个迷宫都是不同的，你可以一直通关迷宫，如果玩累了也可以退出。(玩迷宫时按Esc键返回主菜单)\n下面让我来告诉你这个游戏的玩法吧。";
+	const char *text1 = "欢迎来到无限迷宫冒险游戏，点击开始游戏，会随机生成一个迷宫，走出出口后会继续生成一个迷宫，迷宫无穷无尽，而且每个迷宫都是不同的，你可以一直通关迷宫，如果玩累了也可以退出。\n注：按Esc键返回主菜单\n    按L键可以查看迷宫答案\n下面让我来告诉你这个游戏的玩法吧。";
 	RECT r = {50, 50, 680, 700};
 	drawtext(_T(text1), &r, DT_WORDBREAK);
 	settextstyle(20, 0, "楷书");

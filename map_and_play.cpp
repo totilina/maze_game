@@ -40,7 +40,7 @@ void Initmap(int map[][COL])
 					if (map[x - 2][y] == 10)
 					{
 						map[x - 1][y] = 1;
-						map[x-2][y]=1;
+						map[x - 2][y] = 1;
 						x -= 2;
 						stack[++len] = {x, y};
 						if (biao)
@@ -175,8 +175,8 @@ void Initmap(int map[][COL])
 			x = stack[len].x;
 			y = stack[len].y; // 返回上一个节点
 		}
-		draw_stack(stack, len, map);
-		_getch();
+		// draw_stack(stack, len, map);
+		// _getch();
 	}
 
 	for (int i = 0; i < answer_len - 1; i++)
@@ -189,10 +189,13 @@ void Initmap(int map[][COL])
 
 int Playgame(int map[][COL]) // 控制角色移动的函数，w 向上移动一格，s 向下移动一格，a 向左移动一格，d 向右移动一格
 {
-	int my_x = MAP_COL - 1, my_y = MAP_ROW - 1;
+	int my_x = MAP_COL - 1, my_y = MAP_ROW - 1, ans = 1;
 	while (map[my_x][my_y] != 9)
 	{
-		drawmap(map);
+		if (ans==1)
+			drawmap(map, my_x, my_y);
+		else
+			draw_answer(map, my_x, my_y);
 		map[MAP_ROW - 1][MAP_COL - 1] = 1;
 		setfillcolor(BLUE);
 		fillrectangle(my_y * 20, my_x * 20, (my_y + 1) * 20, (my_x + 1) * 20);
@@ -232,8 +235,9 @@ int Playgame(int map[][COL]) // 控制角色移动的函数，w 向上移动一格，s 向下移动一
 			break;
 		case 'l':
 		case 'L':
-			draw_answer(map);
-			_getch();
+			// draw_answer(map, my_x, my_y);
+			// _getch();
+			ans = -ans;
 			break;
 		default:
 			break;
@@ -243,7 +247,7 @@ int Playgame(int map[][COL]) // 控制角色移动的函数，w 向上移动一格，s 向下移动一
 	return 0;
 }
 
-void drawmap(int map[][COL])
+void drawmap(int map[][COL], int my_x, int my_y)
 {					  // 绘制地图
 	BeginBatchDraw(); // 防频闪
 	cleardevice();
@@ -263,13 +267,16 @@ void drawmap(int map[][COL])
 			}
 		}
 	}
+	setfillcolor(BLUE);
+	fillrectangle(my_y * 20, my_x * 20, (my_y + 1) * 20, (my_x + 1) * 20);
 	EndBatchDraw(); // 防频闪
 }
 
-void draw_answer(int map[][COL])
+void draw_answer(int map[][COL], int my_x, int my_y)
 {
 	BeginBatchDraw(); // 防频闪
 	cleardevice();
+
 	for (int i = 0; i < ROW; i++)
 	{
 		for (int j = 0; j < COL; j++)
@@ -284,7 +291,6 @@ void draw_answer(int map[][COL])
 				setfillcolor(RED);
 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
 			}
-
 			if (map[i][j] == 2)
 			{
 				setfillcolor(GREEN);
@@ -292,6 +298,8 @@ void draw_answer(int map[][COL])
 			}
 		}
 	}
+	setfillcolor(BLUE);
+	fillrectangle(my_y * 20, my_x * 20, (my_y + 1) * 20, (my_x + 1) * 20);
 	EndBatchDraw(); // 防频闪
 }
 
@@ -304,38 +312,38 @@ void copy_(struct Stack stack[], int len, struct Stack *answer)
 	}
 }
 
-void draw_stack(struct Stack stack[], int len, int map[][COL])
-{
-	BeginBatchDraw(); // 防频闪
-	cleardevice();
+// void draw_stack(struct Stack stack[], int len, int map[][COL])
+// {
+// 	BeginBatchDraw(); // 防频闪
+// 	cleardevice();
 
-	for (int i = 0; i < len + 1; i++)
-	{
-		setfillcolor(GREEN);
-		fillrectangle(stack[i].y * 20, stack[i].x * 20, (stack[i].y + 1) * 20, (stack[i].x + 1) * 20);
-	}
+// 	for (int i = 0; i < len + 1; i++)
+// 	{
+// 		setfillcolor(GREEN);
+// 		fillrectangle(stack[i].y * 20, stack[i].x * 20, (stack[i].y + 1) * 20, (stack[i].x + 1) * 20);
+// 	}
 
-	for (int i = 0; i < ROW; i++)
-	{
-		for (int j = 0; j < COL; j++)
-		{
-			if (map[i][j] == 0)
-			{ // 绘制墙
-				setfillcolor(BLACK);
-				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
-			}
-			if (map[i][j] == 9)
-			{ // 绘制终点
-				setfillcolor(RED);
-				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
-			}
+// 	for (int i = 0; i < ROW; i++)
+// 	{
+// 		for (int j = 0; j < COL; j++)
+// 		{
+// 			if (map[i][j] == 0)
+// 			{ // 绘制墙
+// 				setfillcolor(BLACK);
+// 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
+// 			}
+// 			if (map[i][j] == 9)
+// 			{ // 绘制终点
+// 				setfillcolor(RED);
+// 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
+// 			}
 
-			// if (map[i][j] == 2)
-			// {
-			// 	setfillcolor(GREEN);
-			// 	fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
-			// }
-		}
-	}
-	EndBatchDraw(); // 防频闪
-}
+// 			// if (map[i][j] == 2)
+// 			// {
+// 			// 	setfillcolor(GREEN);
+// 			// 	fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
+// 			// }
+// 		}
+// 	}
+// 	EndBatchDraw(); // 防频闪
+// }
