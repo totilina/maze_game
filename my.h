@@ -11,7 +11,7 @@
 #define MAP_ROW ROW - 1
 #define MAP_COL COL - 1
 
-struct Button
+struct Button          //按钮
 {
 	int x, y;		   // 按钮左上角坐标
 	int width, height; // 按钮宽度和高度
@@ -25,7 +25,7 @@ void drawButton(Button btn);							  // 绘制按钮(功能键)函数
 bool isMouseOnButton(Button btn, int mouseX, int mouseY); // 判断鼠标点击位置是否在按钮区域内的函数
 
 
-void Initmap(int map[][COL],int diao);  //初始化地图，生成迷宫
+void Initmap(int map[][COL],int dem);  //初始化地图，生成迷宫
 
 int Playgame(int map[][COL]);  //游戏操作
 
@@ -43,6 +43,4 @@ int Du_set(int *set);  //读取设置信息
 
 int Game_settings(int *set);  //游戏设置
 
-
-void Dem_des();
-
+void Dem_des(); // 生成迷宫演示的说明函数

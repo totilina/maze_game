@@ -1,12 +1,12 @@
 #include "my.h"
 
-struct Stack // 栈
+struct Stack // 储存节点的栈
 {
-	int x;
-	int y;
+	int x;   //节点横坐标
+	int y;   //节点纵坐标
 };
 
-void Initmap(int map[][COL], int diao)
+void Initmap(int map[][COL], int dem)
 {
 
 	int x = 1, y = 1;
@@ -15,7 +15,7 @@ void Initmap(int map[][COL], int diao)
 	struct Stack answer[ROW * COL / 2 + 1];
 
 	int len = -1; // 栈顶
-	int ke = 4;	  // 一个节点接下来可遍历的节点数
+	int ke = 4;	  // 一个节点可遍历的相邻节点数
 	stack[++len] = {1, 1};
 
 	map[1][1] = 1;
@@ -26,16 +26,16 @@ void Initmap(int map[][COL], int diao)
 		ke = 4;
 		int a0 = -1, a1 = -1, a2 = -1, a3 = -1;
 
-		if (diao)
+		if (dem)    //判断是否进入迷宫生成演示
 		{
 			draw_stack(stack, len, map);
 			if(_getch()==27) break;
 		}
 
-		while (ke > 0)
+		while (ke > 0)  //以该节点是否有可遍历的相邻节点作为循环条件
 		{
-			int loc = rand() % 4;
-			if (loc == a0 || loc == a1 || loc == a2 || loc == a3)
+			int loc = rand() % 4;     //生成随机数
+			if (loc == a0 || loc == a1 || loc == a2 || loc == a3) //防止遍历方向重复
 				continue;
 			if (loc == 0) // loc==0,向下遍历
 			{
@@ -49,26 +49,26 @@ void Initmap(int map[][COL], int diao)
 						stack[++len] = {x, y};
 						if (biao)
 						{
-							copy_(stack, len, answer);
+							copy_(stack, len, answer);  //复制通关路径
 							answer_len = len + 1;
 							biao = 0;
 						}
 						break;
 					}
-					map[x - 1][y] = 1;
+					map[x - 1][y] = 1;  //打通墙
 					map[x - 2][y] = 1;
 					x -= 2;
-					stack[++len] = {x, y};
+					stack[++len] = {x, y};  //储存节点
 					break;
 				}
-				else if (map[x - 2][y] == 1 || x == 1)
+				else if (map[x - 2][y] == 1 || x == 1)//该方向无可遍历的相邻节点
 				{
-					ke--;
+					ke--;    //可遍历相邻节点数减少
 					a0 = loc;
 					continue;
 				}
 			}
-			else if (loc == 1)
+			else if (loc == 1)  //loc==1，向右遍历
 			{
 				if (map[x][y + 2] != 1 && y < COL - 2)
 				{
@@ -99,7 +99,7 @@ void Initmap(int map[][COL], int diao)
 					continue;
 				}
 			}
-			else if (loc == 2)
+			else if (loc == 2)  //loc==2,向下遍历
 			{
 
 				if (map[x + 2][y] != 1 && x < ROW - 2)
@@ -131,7 +131,7 @@ void Initmap(int map[][COL], int diao)
 					continue;
 				}
 			}
-			else if (loc == 3)
+			else if (loc == 3)   //loc==3,向左遍历
 			{
 				if (map[x][y - 2] != 1 && y > 1)
 				{
@@ -165,15 +165,17 @@ void Initmap(int map[][COL], int diao)
 		}
 		if (ke == 0) // 该节点无可遍历的下一个节点，返回上一个节点
 		{
-			stack[len] = {-1, -1}; // 清除栈的数据
+			// 清除栈的数据
+			stack[len] = {-1, -1}; 
 			len--;
+            // 返回上一个节点
 			x = stack[len].x;
-			y = stack[len].y; // 返回上一个节点
+			y = stack[len].y;
 		}
 		
 	}
 
-	for (int i = 0; i < answer_len - 1; i++)
+	for (int i = 0; i < answer_len - 1; i++)  //将通关路径上的点的值均赋值为2
 	{
 		map[answer[i].x][answer[i].y] = 2;
 		map[(answer[i].x + answer[i + 1].x) / 2][(answer[i].y + answer[i + 1].y) / 2] = 2;
@@ -227,7 +229,7 @@ int Playgame(int map[][COL])
 		case 27: // 按Esc键返回1，退回主菜单
 			return 1;
 			break;
-		case 'l':
+		case 'l'://按L键显示通关路径
 		case 'L':
 			ans = -ans;
 			break;
@@ -235,7 +237,7 @@ int Playgame(int map[][COL])
 			break;
 		}
 	}
-	// MessageBox(GetHWnd(), (LPCSTR) "恭喜你走出迷宫", (LPCSTR) "Title", MB_OK);
+	// MessageBox(GetHWnd(), (LPCSTR) "恭喜你走出迷宫", (LPCSTR) "Title", MB_OK); //弹窗
 	return 0;
 }
 
@@ -332,7 +334,7 @@ void draw_stack(struct Stack stack[], int len, int map[][COL])
 			}
 
 			if (map[i][j] == 10)
-			{
+			{//绘制角色
 				setfillcolor(BLUE);
 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
 			}

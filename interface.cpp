@@ -108,7 +108,7 @@ void Game_description()
 	drawtext(_T(text1), &r, DT_WORDBREAK);
 	settextstyle(20, 0, "楷书");
 	outtextxy(ROW * SIZE - 15 * SIZE, COL * SIZE - 10 * SIZE, "(鼠标左键点击任意位置继续...)");
-	while (true)
+	while (true)          //阻塞程序，等待获取鼠标左键信息，鼠标左键点击任意位置继续
 	{
 		if (MouseHit())
 		{
@@ -119,7 +119,7 @@ void Game_description()
 			}
 		}
 	}
-	// _getch();
+
 	cleardevice();
 
 	setfillcolor(RED);
@@ -148,8 +148,8 @@ void Game_description()
 	putimage(30, 200, &bgImage); // 显示图片
 
 	outtextxy(ROW * SIZE - 20 * SIZE, COL * SIZE - 10 * SIZE, "(鼠标左键点击任意位置返回主菜单...)");
-	// _getch();
-	while (true)
+
+	while (true)        //鼠标左键点击窗口内任意位置继续
 	{
 		if (MouseHit())
 		{
@@ -189,7 +189,7 @@ int Du_set(int *set)
 
 int Game_settings(int *set)
 {
-	setbkcolor(RGB(139, 137, 137));
+	setbkcolor(RGB(139, 137, 137));//黑色背景
 	cleardevice();
 	settextstyle(40, 0, "微软雅黑");
 	setbkmode(TRANSPARENT);
@@ -217,9 +217,9 @@ int Game_settings(int *set)
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					if (isMouseOnButton(buttons[i], msg.x, msg.y))
+					if (isMouseOnButton(buttons[i], msg.x, msg.y))		// 点击按钮区域响应
 					{
-						// 点击响应
+
 						*set = i;
 						FILE *fp;
 						char filename[] = "settings.txt";
@@ -240,7 +240,7 @@ int Game_settings(int *set)
 
 						// 关闭文件
 						fclose(fp);
-						return *set;
+						return i;
 					}
 				}
 			}
@@ -254,11 +254,11 @@ void Dem_des(){
 	settextstyle(35, 0, "楷书");
 	// settextstyle(40, 0, "宋体");
 	const char *text1 = "出于加深对DFS算法的理解，添加了这么一个模式，在这个模式将生成该迷宫的算法可视化，希望这个模式可以给对这方面给感兴趣的人一点启发。\n接下来让我简单介绍一下这个模式，刚进入这个模式会展现出这个迷宫最原始的样子(基本全是黑黑的墙)，而当你按下除Esc键外任意一个键，该算法便会向下执行一步，绿色的方块是栈的节点，即遍历起点到红色节点中途需经过的节点，找到迷宫入口后将所有节点连起来便是通关路径，而红色方块是当前遍历位置，迷宫生成好后也可以继续玩游戏，生成中途按Esc键可以中止生成，再按一次Esc键可以返回主菜单\n注：只有坐标均为奇数的点才是节点，两节点间是被打通的墙，即两节点间会有一条路";
-	RECT r = {50, 50, 700, 800};
-	drawtext(_T(text1), &r, DT_WORDBREAK);
+	RECT r = {50, 50, 700, 800};   //文字显示区域
+	drawtext(_T(text1), &r, DT_WORDBREAK);  
 	settextstyle(20, 0, "楷书");
 	outtextxy(ROW * SIZE - 15 * SIZE, COL * SIZE - 5 * SIZE, "(鼠标左键点击任意位置继续...)");
-	while (true)
+	while (true)    //鼠标左键点击窗口内任意位置
 	{
 		if (MouseHit())
 		{
