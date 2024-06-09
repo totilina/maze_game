@@ -1,37 +1,41 @@
 #include "my.h"
 
-struct Stack
+struct Stack // 栈
 {
 	int x;
 	int y;
 };
 
-void Initmap(int map[][COL])
+void Initmap(int map[][COL], int diao)
 {
 
 	int x = 1, y = 1;
 	// int old_x = x, old_y = y;
-	struct Stack stack[ROW * COL]; // 创建一个栈，模拟递归
-	struct Stack answer[ROW * COL];
+	struct Stack stack[ROW * COL / 2 + 1]; // 创建一个栈，模拟递归
+	struct Stack answer[ROW * COL / 2 + 1];
 
 	int len = -1; // 栈顶
 	int ke = 4;	  // 一个节点接下来可遍历的节点数
 	stack[++len] = {1, 1};
 
 	map[1][1] = 1;
-	int biao = 1, answer_len = 0;
+	int biao = 1, answer_len = 0; // biao是是否找到入口的标记，answer_len是通关路径的长度
 
 	while (len != -1)
 	{
 		ke = 4;
 		int a0 = -1, a1 = -1, a2 = -1, a3 = -1;
 
-		int old_loc = -1;
+		if (diao)
+		{
+			draw_stack(stack, len, map);
+			if(_getch()==27) break;
+		}
 
 		while (ke > 0)
 		{
 			int loc = rand() % 4;
-			if (loc == a0 || loc == a1 || loc == a2 || loc == a3 || loc == old_loc)
+			if (loc == a0 || loc == a1 || loc == a2 || loc == a3)
 				continue;
 			if (loc == 0) // loc==0,向下遍历
 			{
@@ -49,14 +53,12 @@ void Initmap(int map[][COL])
 							answer_len = len + 1;
 							biao = 0;
 						}
-						old_loc = loc;
 						break;
 					}
 					map[x - 1][y] = 1;
 					map[x - 2][y] = 1;
 					x -= 2;
 					stack[++len] = {x, y};
-					old_loc = loc;
 					break;
 				}
 				else if (map[x - 2][y] == 1 || x == 1)
@@ -82,14 +84,12 @@ void Initmap(int map[][COL])
 							answer_len = len + 1;
 							biao = 0;
 						}
-						old_loc = loc;
 						break;
 					}
 					map[x][y + 1] = 1;
 					map[x][y + 2] = 1;
 					y += 2;
 					stack[++len] = {x, y};
-					old_loc = loc;
 					break;
 				}
 				else if (map[x][y + 2] == 1 || y == COL - 2)
@@ -117,13 +117,11 @@ void Initmap(int map[][COL])
 							biao = 0;
 						}
 						break;
-						old_loc = loc;
 					}
 					map[x + 1][y] = 1;
 					map[x + 2][y] = 1;
 					x += 2;
 					stack[++len] = {x, y};
-					old_loc = loc;
 					break;
 				}
 				else if (map[x + 2][y] == 1 || x == ROW - 2)
@@ -135,7 +133,6 @@ void Initmap(int map[][COL])
 			}
 			else if (loc == 3)
 			{
-
 				if (map[x][y - 2] != 1 && y > 1)
 				{
 					if (map[x][y - 2] == 10)
@@ -150,14 +147,12 @@ void Initmap(int map[][COL])
 							answer_len = len + 1;
 							biao = 0;
 						}
-						old_loc = loc;
 						break;
 					}
 					map[x][y - 1] = 1;
 					map[x][y - 2] = 1;
 					y -= 2;
 					stack[++len] = {x, y};
-					old_loc = loc;
 					break;
 				}
 				else if (map[x][y - 2] == 1 || y == 1)
@@ -175,8 +170,7 @@ void Initmap(int map[][COL])
 			x = stack[len].x;
 			y = stack[len].y; // 返回上一个节点
 		}
-		// draw_stack(stack, len, map);
-		// _getch();
+		
 	}
 
 	for (int i = 0; i < answer_len - 1; i++)
@@ -187,19 +181,19 @@ void Initmap(int map[][COL])
 	map[1][1] = 9; // 终点位置，迷宫出口
 }
 
-int Playgame(int map[][COL]) // 控制角色移动的函数，w 向上移动一格，s 向下移动一格，a 向左移动一格，d 向右移动一格
+int Playgame(int map[][COL])
 {
 	int my_x = MAP_COL - 1, my_y = MAP_ROW - 1, ans = 1;
 	while (map[my_x][my_y] != 9)
 	{
-		if (ans==1)
+		if (ans == 1)
 			drawmap(map, my_x, my_y);
 		else
 			draw_answer(map, my_x, my_y);
 		map[MAP_ROW - 1][MAP_COL - 1] = 1;
 		setfillcolor(BLUE);
 		fillrectangle(my_y * 20, my_x * 20, (my_y + 1) * 20, (my_x + 1) * 20);
-		char dir = _getch();
+		char dir = _getch(); // w 向上移动一格，s 向下移动一格，a 向左移动一格，d 向右移动一格
 		switch (dir)
 		{
 		case 'w':
@@ -235,15 +229,13 @@ int Playgame(int map[][COL]) // 控制角色移动的函数，w 向上移动一格，s 向下移动一
 			break;
 		case 'l':
 		case 'L':
-			// draw_answer(map, my_x, my_y);
-			// _getch();
 			ans = -ans;
 			break;
 		default:
 			break;
 		}
 	}
-	// MessageBox(GetHWnd(), (LPCSTR)"恭喜你走出迷宫", (LPCSTR)"Title", MB_OK);
+	// MessageBox(GetHWnd(), (LPCSTR) "恭喜你走出迷宫", (LPCSTR) "Title", MB_OK);
 	return 0;
 }
 
@@ -276,7 +268,7 @@ void draw_answer(int map[][COL], int my_x, int my_y)
 {
 	BeginBatchDraw(); // 防频闪
 	cleardevice();
-	
+
 	for (int i = 0; i < ROW; i++)
 	{
 		for (int j = 0; j < COL; j++)
@@ -312,38 +304,39 @@ void copy_(struct Stack stack[], int len, struct Stack *answer)
 	}
 }
 
-// void draw_stack(struct Stack stack[], int len, int map[][COL])
-// {
-// 	BeginBatchDraw(); // 防频闪
-// 	cleardevice();
+void draw_stack(struct Stack stack[], int len, int map[][COL])
+{
+	BeginBatchDraw(); // 防频闪
+	cleardevice();
 
-// 	for (int i = 0; i < len + 1; i++)
-// 	{
-// 		setfillcolor(GREEN);
-// 		fillrectangle(stack[i].y * 20, stack[i].x * 20, (stack[i].y + 1) * 20, (stack[i].x + 1) * 20);
-// 	}
+	for (int i = 0; i < len + 1; i++)
+	{
+		setfillcolor(GREEN);
+		if(i==len) setfillcolor(RED);
+		fillrectangle(stack[i].y * 20, stack[i].x * 20, (stack[i].y + 1) * 20, (stack[i].x + 1) * 20);
+	}
 
-// 	for (int i = 0; i < ROW; i++)
-// 	{
-// 		for (int j = 0; j < COL; j++)
-// 		{
-// 			if (map[i][j] == 0)
-// 			{ // 绘制墙
-// 				setfillcolor(BLACK);
-// 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
-// 			}
-// 			if (map[i][j] == 9)
-// 			{ // 绘制终点
-// 				setfillcolor(RED);
-// 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
-// 			}
+	for (int i = 0; i < ROW; i++)
+	{
+		for (int j = 0; j < COL; j++)
+		{
+			if (map[i][j] == 0)
+			{ // 绘制墙
+				setfillcolor(BLACK);
+				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
+			}
+			if (map[i][j] == 9)
+			{ // 绘制终点
+				setfillcolor(RED);
+				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
+			}
 
-// 			// if (map[i][j] == 2)
-// 			// {
-// 			// 	setfillcolor(GREEN);
-// 			// 	fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
-// 			// }
-// 		}
-// 	}
-// 	EndBatchDraw(); // 防频闪
-// }
+			if (map[i][j] == 10)
+			{
+				setfillcolor(BLUE);
+				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
+			}
+		}
+	}
+	EndBatchDraw(); // 防频闪
+}
