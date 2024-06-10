@@ -2,8 +2,8 @@
 
 struct Stack // 储存节点的栈
 {
-	int x;   //节点横坐标
-	int y;   //节点纵坐标
+	int x; // 节点横坐标
+	int y; // 节点纵坐标
 };
 
 void Initmap(int map[][COL], int dem)
@@ -26,16 +26,17 @@ void Initmap(int map[][COL], int dem)
 		ke = 4;
 		int a0 = -1, a1 = -1, a2 = -1, a3 = -1;
 
-		if (dem)    //判断是否进入迷宫生成演示
+		if (dem) // 判断是否进入迷宫生成演示
 		{
 			draw_stack(stack, len, map);
-			if(_getch()==27) break;
+			if (_getch() == 27)
+				break;
 		}
 
-		while (ke > 0)  //以该节点是否有可遍历的相邻节点作为循环条件
+		while (ke > 0) // 以该节点是否有可遍历的相邻节点作为循环条件
 		{
-			int loc = rand() % 4;     //生成随机数
-			if (loc == a0 || loc == a1 || loc == a2 || loc == a3) //防止遍历方向重复
+			int loc = rand() % 4;								  // 生成随机数
+			if (loc == a0 || loc == a1 || loc == a2 || loc == a3) // 防止遍历方向重复
 				continue;
 			if (loc == 0) // loc==0,向下遍历
 			{
@@ -49,26 +50,26 @@ void Initmap(int map[][COL], int dem)
 						stack[++len] = {x, y};
 						if (biao)
 						{
-							copy_(stack, len, answer);  //复制通关路径
+							copy_(stack, len, answer); // 复制通关路径
 							answer_len = len + 1;
 							biao = 0;
 						}
 						break;
 					}
-					map[x - 1][y] = 1;  //打通墙
+					map[x - 1][y] = 1; // 打通墙
 					map[x - 2][y] = 1;
 					x -= 2;
-					stack[++len] = {x, y};  //储存节点
+					stack[++len] = {x, y}; // 储存节点
 					break;
 				}
-				else if (map[x - 2][y] == 1 || x == 1)//该方向无可遍历的相邻节点
+				else if (map[x - 2][y] == 1 || x == 1) // 该方向无可遍历的相邻节点
 				{
-					ke--;    //可遍历相邻节点数减少
+					ke--; // 可遍历相邻节点数减少
 					a0 = loc;
 					continue;
 				}
 			}
-			else if (loc == 1)  //loc==1，向右遍历
+			else if (loc == 1) // loc==1，向右遍历
 			{
 				if (map[x][y + 2] != 1 && y < COL - 2)
 				{
@@ -99,7 +100,7 @@ void Initmap(int map[][COL], int dem)
 					continue;
 				}
 			}
-			else if (loc == 2)  //loc==2,向下遍历
+			else if (loc == 2) // loc==2,向下遍历
 			{
 
 				if (map[x + 2][y] != 1 && x < ROW - 2)
@@ -131,7 +132,7 @@ void Initmap(int map[][COL], int dem)
 					continue;
 				}
 			}
-			else if (loc == 3)   //loc==3,向左遍历
+			else if (loc == 3) // loc==3,向左遍历
 			{
 				if (map[x][y - 2] != 1 && y > 1)
 				{
@@ -166,16 +167,18 @@ void Initmap(int map[][COL], int dem)
 		if (ke == 0) // 该节点无可遍历的下一个节点，返回上一个节点
 		{
 			// 清除栈的数据
-			stack[len] = {-1, -1}; 
+			stack[len] = {-1, -1};
 			len--;
-            // 返回上一个节点
-			x = stack[len].x;
-			y = stack[len].y;
+			// 返回上一个节点
+			if (len != -1)
+			{
+				x = stack[len].x;
+				y = stack[len].y;
+			}
 		}
-		
 	}
 
-	for (int i = 0; i < answer_len - 1; i++)  //将通关路径上的点的值均赋值为2
+	for (int i = 0; i < answer_len - 1; i++) // 将通关路径上的点的值均赋值为2
 	{
 		map[answer[i].x][answer[i].y] = 2;
 		map[(answer[i].x + answer[i + 1].x) / 2][(answer[i].y + answer[i + 1].y) / 2] = 2;
@@ -185,13 +188,15 @@ void Initmap(int map[][COL], int dem)
 
 int Playgame(int map[][COL])
 {
+	// my_x，my_y分别为角色位置，而ans则是区别进入的模式
 	int my_x = MAP_COL - 1, my_y = MAP_ROW - 1, ans = 1;
 	while (map[my_x][my_y] != 9)
 	{
 		if (ans == 1)
-			drawmap(map, my_x, my_y);
+			drawmap(map, my_x, my_y);    //正常模式
 		else
-			draw_answer(map, my_x, my_y);
+			draw_answer(map, my_x, my_y);//查看通关路径，答案模式
+		
 		map[MAP_ROW - 1][MAP_COL - 1] = 1;
 		setfillcolor(BLUE);
 		fillrectangle(my_y * 20, my_x * 20, (my_y + 1) * 20, (my_x + 1) * 20);
@@ -229,7 +234,7 @@ int Playgame(int map[][COL])
 		case 27: // 按Esc键返回1，退回主菜单
 			return 1;
 			break;
-		case 'l'://按L键显示通关路径
+		case 'l': // 按L键显示通关路径
 		case 'L':
 			ans = -ans;
 			break;
@@ -306,7 +311,7 @@ void copy_(struct Stack stack[], int len, struct Stack *answer)
 	}
 }
 
-void draw_stack(struct Stack stack[], int len, int map[][COL])
+void draw_stack(struct Stack stack[], int len, int map[][COL])    
 {
 	BeginBatchDraw(); // 防频闪
 	cleardevice();
@@ -314,7 +319,8 @@ void draw_stack(struct Stack stack[], int len, int map[][COL])
 	for (int i = 0; i < len + 1; i++)
 	{
 		setfillcolor(GREEN);
-		if(i==len) setfillcolor(RED);
+		if (i == len)
+			setfillcolor(RED);
 		fillrectangle(stack[i].y * 20, stack[i].x * 20, (stack[i].y + 1) * 20, (stack[i].x + 1) * 20);
 	}
 
@@ -334,7 +340,7 @@ void draw_stack(struct Stack stack[], int len, int map[][COL])
 			}
 
 			if (map[i][j] == 10)
-			{//绘制角色
+			{ // 绘制角色
 				setfillcolor(BLUE);
 				fillrectangle(j * 20, i * 20, (j + 1) * 20, (i + 1) * 20);
 			}
