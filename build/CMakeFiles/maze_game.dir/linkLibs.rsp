@@ -1,0 +1,1 @@
+ "C:/PROGRA~1/mingw64/x86_64-w64-mingw32/lib/libeasyx.a" -lgdi32 -lole32 -luuid -loleaut32 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
