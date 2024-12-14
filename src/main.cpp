@@ -12,8 +12,6 @@ int main()
 	{
 		// 绘制主界面
 		int flag = Main_interface(set);
-
-
 		switch (flag)
 		{
 		case 0:                 //开始游戏

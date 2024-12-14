@@ -26,11 +26,37 @@ void Initmap(int map[][COL], int dem)
 		ke = 4;
 		int a0 = -1, a1 = -1, a2 = -1, a3 = -1;
 
-		if (dem) // 判断是否进入迷宫生成演示
+		if (dem)
 		{
 			draw_stack(stack, len, map);
-			if (_getch() == 27)
-				break;
+
+			// 处理消息
+			ExMessage msg;
+
+			// 等待按下 L 键
+			bool keyPressed = false;
+			while (!keyPressed)
+			{
+				if (peekmessage(&msg))
+				{
+					if (msg.message == WM_KEYDOWN)
+					{
+						if (msg.vkcode == 'L') // 检查是否按下 L 键
+						{
+							keyPressed = true; // 按下 L 键继续
+						}
+						else if (msg.vkcode == VK_ESCAPE)
+						{
+							return; // ESC键直接退出
+						}
+					}
+					else if (msg.message == WM_CLOSE) // 处理窗口关闭
+					{
+						return;
+					}
+				}
+				Sleep(10); // 避免CPU占用过高
+			}
 		}
 
 		while (ke > 0) // 以该节点是否有可遍历的相邻节点作为循环条件
@@ -188,61 +214,60 @@ void Initmap(int map[][COL], int dem)
 
 int Playgame(int map[][COL])
 {
-	// my_x，my_y分别为角色位置，而ans则是区别进入的模式
 	int my_x = MAP_COL - 1, my_y = MAP_ROW - 1, ans = 1;
-	while (map[my_x][my_y] != 9)
+	ExMessage msg;
+	bool running = true;
+	while (running && map[my_x][my_y] != 9)
 	{
+		while (peekmessage(&msg)) // 检查是否有消息
+		{
+			if (msg.message == WM_KEYDOWN) // 按键按下消息
+			{
+				switch (msg.vkcode)
+				{
+				case 'W':
+					if (map[my_x - 1][my_y] != 0 && my_x > 1)
+						my_x--;
+					break;
+				case 'S':
+					if (map[my_x + 1][my_y] != 0 && my_x < MAP_ROW)
+						my_x++;
+					break;
+				case 'A':
+					if (map[my_x][my_y - 1] != 0 && my_y > 1)
+						my_y--;
+					break;
+				case 'D':
+					if (map[my_x][my_y + 1] != 0 && my_y < MAP_COL)
+						my_y++;
+					break;
+				case 'L':
+					ans = -ans;
+					Sleep(100);
+					break;
+				case VK_ESCAPE:
+					running = false;
+					return 1;
+				}
+			}
+			else if (msg.message == WM_CLOSE) // 处理窗口关闭消息
+			{
+				running = false;
+				return 1;
+			}
+		}
+
 		if (ans == 1)
-			drawmap(map, my_x, my_y);    //正常模式
+			drawmap(map, my_x, my_y);
 		else
-			draw_answer(map, my_x, my_y);//查看通关路径，答案模式
-		
+			draw_answer(map, my_x, my_y);
+
 		map[MAP_ROW - 1][MAP_COL - 1] = 1;
 		setfillcolor(BLUE);
 		fillrectangle(my_y * 20, my_x * 20, (my_y + 1) * 20, (my_x + 1) * 20);
-		char dir = _getch(); // w 向上移动一格，s 向下移动一格，a 向左移动一格，d 向右移动一格
-		switch (dir)
-		{
-		case 'w':
-		case 'W':
-			if (map[my_x - 1][my_y] != 0 && my_x > 1)
-			{
-				my_x--;
-			}
-			break;
-		case 'd':
-		case 'D':
-			if (map[my_x][my_y + 1] != 0 && my_y < MAP_COL)
-			{
-				my_y++;
-			}
-			break;
-		case 's':
-		case 'S':
-			if (map[my_x + 1][my_y] != 0 && my_x < MAP_ROW)
-			{
-				my_x++;
-			}
-			break;
-		case 'a':
-		case 'A':
-			if (map[my_x][my_y - 1] != 0 && my_y > 1)
-			{
-				my_y--;
-			}
-			break;
-		case 27: // 按Esc键返回1，退回主菜单
-			return 1;
-			break;
-		case 'l': // 按L键显示通关路径
-		case 'L':
-			ans = -ans;
-			break;
-		default:
-			break;
-		}
+
+		Sleep(10);
 	}
-	// MessageBox(GetHWnd(), (LPCSTR) "恭喜你走出迷宫", (LPCSTR) "Title", MB_OK); //弹窗
 	return 0;
 }
 
@@ -311,7 +336,7 @@ void copy_(struct Stack stack[], int len, struct Stack *answer)
 	}
 }
 
-void draw_stack(struct Stack stack[], int len, int map[][COL])    
+void draw_stack(struct Stack stack[], int len, int map[][COL])
 {
 	BeginBatchDraw(); // 防频闪
 	cleardevice();
